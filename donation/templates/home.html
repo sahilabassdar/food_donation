@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Donations</title>
+</head>
+<body>
+
+<!-- 🔐 LOGIN / LOGOUT SECTION -->
+{% if user.is_authenticated %}
+    <p>Welcome {{ user.username }}</p>
+    <a href="{% url 'logout' %}">Logout</a>
+{% else %}
+    <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'signup' %}">Signup</a>
+{% endif %}
+
+<hr>
+
+<h1>Available Food Donations</h1>
+
+<ul>
+    {% for food in foods %}
+        <li>
+            {{ food.food_name }} - {{ food.quantity }} - {{ food.location }}
+
+            <a href="{% url 'request_food' food.id %}">
+                Request Food
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+<hr>
+
+<h2>Your Requests</h2>
+
+<ul>
+    {% for req in requests %}
+        <li>{{ req.food.food_name }} - {{ req.status }}</li>
+    {% empty %}
+        <li>No requests yet</li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
