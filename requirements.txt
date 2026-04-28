@@ -1,0 +1,13 @@
+asgiref==3.11.1
+distlib==0.4.0
+Django==6.0.3
+filelock==3.28.0
+gunicorn==25.3.0
+packaging==26.2
+platformdirs==4.9.6
+python-discovery==1.2.2
+sqlparse==0.5.5
+stevedore==5.7.0
+virtualenv==21.2.4
+virtualenv-clone==0.5.7
+virtualenvwrapper==6.1.1
