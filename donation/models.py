@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class FoodDonation(models.Model):
     donor = models.ForeignKey(User, on_delete=models.CASCADE)
     food_name = models.CharField(max_length=100)
@@ -19,11 +20,3 @@ class Request(models.Model):
 
     def __str__(self):
         return f"{self.food.food_name} requested by {self.requester.username}"
-        from django.contrib.auth.models import User
-
-def fix_admin_user():
-    User.objects.filter(username="admin").update(
-        is_staff=True,
-        is_superuser=True,
-        is_active=True
-    )
