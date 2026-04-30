@@ -14,6 +14,11 @@ ALLOWED_HOSTS = [
     "localhost"
 ]
 
+# ✅ IMPORTANT: Fix CSRF for Render
+CSRF_TRUSTED_ORIGINS = [
+    "https://food-donation-o8zq.onrender.com",
+]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,12 +57,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'food_project.wsgi.application'
 
-# ✅ PostgreSQL Database (Render)
-DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
-}
+# =========================
+# DATABASE (LOCAL + RENDER SAFE)
+# =========================
 
-# Keep it simple
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
 AUTH_PASSWORD_VALIDATORS = []
 
 LANGUAGE_CODE = 'en-us'

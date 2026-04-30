@@ -6,11 +6,30 @@ from django.http import HttpResponse
 
 
 def home(request):
+    # 🔹 ADD FOOD (donor)
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        name = request.POST.get("name")
+        quantity = request.POST.get("quantity")
+        location = request.POST.get("location")
+
+        FoodDonation.objects.create(
+            donor=request.user,
+            food_name=name,
+            quantity=quantity,
+            location=location
+        )
+
+        return redirect('home')
+
+    # 🔹 SHOW FOOD LIST
     foods = FoodDonation.objects.all()
 
+    # 🔹 SHOW USER REQUESTS
     if request.user.is_authenticated:
-        user = request.user
-        requests = Request.objects.filter(requester=user)
+        requests = Request.objects.filter(requester=request.user)
     else:
         requests = []
 
@@ -26,11 +45,9 @@ def request_food(request, id):
 
     food = FoodDonation.objects.get(id=id)
 
-    user = request.user
-
     Request.objects.create(
         food=food,
-        requester=user
+        requester=request.user
     )
 
     return redirect('home')
@@ -38,10 +55,10 @@ def request_food(request, id):
 
 def signup_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = User.objects.create_user(username=username, password=password)
+        user = User.objects.create_user(
+            username=request.POST['username'],
+            password=request.POST['password']
+        )
         login(request, user)
         return redirect('home')
 
@@ -50,16 +67,17 @@ def signup_view(request):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        user = authenticate(
+            request,
+            username=request.POST['username'],
+            password=request.POST['password']
+        )
 
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
+        if user:
             login(request, user)
             return redirect('home')
-        else:
-            return HttpResponse("Invalid credentials")
+
+        return HttpResponse("Invalid credentials")
 
     return render(request, 'login.html')
 
