@@ -1,15 +1,15 @@
 from django.contrib import admin
 from .models import FoodDonation, Request
 
-admin.site.register(FoodDonation)
-admin.site.register(Request)
-from django.contrib.auth.models import User
 
-try:
-    user = User.objects.get(username="admin")
-    user.is_staff = True
-    user.is_superuser = True
-    user.is_active = True
-    user.save()
-except:
-    pass
+@admin.register(FoodDonation)
+class FoodDonationAdmin(admin.ModelAdmin):
+    list_display = ('food_name', 'quantity', 'location', 'status', 'donor')
+    list_filter = ('status',)
+    search_fields = ('food_name', 'location')
+
+
+@admin.register(Request)
+class RequestAdmin(admin.ModelAdmin):
+    list_display = ('food', 'requester', 'status')
+    list_filter = ('status',)
