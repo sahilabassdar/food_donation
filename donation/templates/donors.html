@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Donors{% endblock %}
+
+{% block content %}
+
+<div class="text-center mb-4">
+    <h2>Available Donors</h2>
+    <p class="text-muted">People who have donated food</p>
+</div>
+
+<div class="card p-3">
+
+    <table class="table table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Food Item</th>
+                <th>Quantity</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for d in donors %}
+            <tr>
+                <td>{{ d.name }}</td>
+                <td>{{ d.food }}</td>
+                <td>{{ d.quantity }}</td>
+                <td>{{ d.location }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

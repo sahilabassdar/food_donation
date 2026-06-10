@@ -1,65 +1,87 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Food Donations</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-<!-- LOGIN / LOGOUT -->
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<div class="text-center mb-4">
+    <h2>Food Waste Management System</h2>
+    <p class="text-muted">Donate food & help people in need</p>
+</div>
+
+<!-- 🔹 ADD FOOD FORM -->
+<div class="card p-4 mb-4">
+
+    <h4>Add Food Donation</h4>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <input class="form-control mb-2" name="name" placeholder="Food Name">
+        <input class="form-control mb-2" name="quantity" placeholder="Quantity">
+        <input class="form-control mb-2" name="location" placeholder="Location">
+
+        <button class="btn btn-success w-100">Donate Food</button>
+    </form>
+
+</div>
+
+<!-- 🔹 FOOD LIST -->
+<div class="card p-3 mb-4">
+
+    <h4>Available Food</h4>
+
+    <table class="table table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Food</th>
+                <th>Quantity</th>
+                <th>Location</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for food in foods %}
+            <tr>
+                <td>{{ food.food_name }}</td>
+                <td>{{ food.quantity }}</td>
+                <td>{{ food.location }}</td>
+                <td>
+                    <a href="/request/{{ food.id }}/" class="btn btn-primary btn-sm">
+                        Request
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- 🔹 USER REQUESTS -->
 {% if user.is_authenticated %}
-    <p>Welcome {{ user.username }}</p>
-    <a href="{% url 'logout' %}">Logout</a>
-{% else %}
-    <a href="{% url 'login' %}">Login</a>
-    <a href="{% url 'signup' %}">Signup</a>
-{% endif %}
 
-<hr>
+<div class="card p-3">
 
-<!-- DONOR FORM -->
-<h2>Add Food Donation</h2>
+    <h4>My Requests</h4>
 
-{% if user.is_authenticated %}
-<form method="POST">
-    {% csrf_token %}
-    <input type="text" name="name" placeholder="Food name" required><br>
-    <input type="text" name="quantity" placeholder="Quantity" required><br>
-    <input type="text" name="location" placeholder="Location" required><br>
-    <button type="submit">Donate Food</button>
-</form>
-{% else %}
-<p>Please login to donate food</p>
-{% endif %}
+    <ul class="list-group">
 
-<hr>
-
-<!-- FOOD LIST -->
-<h1>Available Food Donations</h1>
-
-<ul>
-    {% for food in foods %}
-        <li>
-            {{ food.food_name }} - {{ food.quantity }} - {{ food.location }}
-
-            <a href="{% url 'request_food' food.id %}">
-                Request Food
-            </a>
+        {% for r in requests %}
+        <li class="list-group-item">
+            {{ r.food.food_name }} - Requested
         </li>
-    {% endfor %}
-</ul>
+        {% empty %}
+        <li class="list-group-item">No requests yet</li>
+        {% endfor %}
 
-<hr>
+    </ul>
 
-<!-- USER REQUESTS -->
-<h2>Your Requests</h2>
+</div>
 
-<ul>
-    {% for req in requests %}
-        <li>{{ req.food.food_name }} - {{ req.status }}</li>
-    {% empty %}
-        <li>No requests yet</li>
-    {% endfor %}
-</ul>
+{% endif %}
 
-</body>
-</html>
+{% endblock %}

@@ -85,3 +85,20 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+    from django.contrib.auth.models import User
+
+from django.contrib.auth.models import User
+
+def admin_dashboard(request):
+    total_users = User.objects.count()
+    total_food = FoodDonation.objects.count()
+    total_requests = Request.objects.count()
+
+    recent_donations = FoodDonation.objects.order_by('-id')[:5]
+
+    return render(request, 'admin_dashboard.html', {
+        'total_users': total_users,
+        'total_food': total_food,
+        'total_requests': total_requests,
+        'recent_donations': recent_donations,
+    })
